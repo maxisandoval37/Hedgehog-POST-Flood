@@ -1,4 +1,5 @@
 let intervalId = null;
+const glitchToggle = document.getElementById("glitchToggle");
 
 function redirectToHTTPS() {
     let urlHTTP = "http://";
@@ -82,9 +83,16 @@ function logMessage(message) {
 
 function startLoop() {
     stopLoop();
+
     const interval = parseInt(document.getElementById("interval").value, 10) || 1000;
     intervalId = setInterval(sendRequest, interval);
     logMessage("🔄 Looping request started...");
+
+    glitchToggle.disabled = true;
+    
+    if (glitchToggle.checked) {
+        document.body.classList.add("glitch-effect");
+    }
 }
 
 function stopLoop() {
@@ -92,5 +100,8 @@ function stopLoop() {
         clearInterval(intervalId);
         intervalId = null;
         logMessage("🛑 Request stopped.");
+
+        document.body.classList.remove("glitch-effect");
+        glitchToggle.disabled = false;
     }
 }
