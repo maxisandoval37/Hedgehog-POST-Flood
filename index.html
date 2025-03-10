@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hedgehog POST Flood</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>redirectToHTTPS()</script>
 </head>
 <body class="bg-gray-100 p-6">
     
@@ -63,6 +64,8 @@
                   class="w-full h-52 p-3 bg-gray-900 text-green-400 border border-gray-700 rounded-md overflow-auto font-mono"></textarea>
     </div>
 
+    <hr class="my-6 border-gray-300">
+
     <footer class="mt-10 text-center text-gray-700">
         <p class="text-lg">Developed by <strong>Maximiliano Sandoval</strong> 🦔</p>
         <p><a href="https://maxisandoval.dev.ar/" class="text-blue-500 hover:underline">My Website</a> | 
@@ -70,6 +73,19 @@
     </footer>
 
     <script>
+
+        function redirectToHTTPS() {
+            let urlHTTP = "http://";
+            let urlCurrent = location.href;
+            if (urlCurrent.includes(urlHTTP) && !(isLocalHost(urlCurrent))) {
+                location.href = urlCurrent.replace("http", "https");
+            }
+        }
+
+        function isLocalHost(str){
+            return ((/\d/.test(str)) || (str.includes("local")));
+        }
+
         let intervalId = null;
 
         function closeModal() {
