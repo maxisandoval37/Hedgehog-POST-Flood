@@ -1,18 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hedgehog POST Flood</title>
     <script src="js/utils.js?10032025v1"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" defer></script>
 </head>
 <body class="bg-gray-100 p-6">
     
     <!-- Modal -->
     <div id="warningModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-            <h2 class="text-xl font-bold text-red-600 mb-4">⚠️ Warning ⚠️</h2>
+            <h2 class="text-xl font-bold text-red-600 mb-4">
+                <i class="fas fa-exclamation-triangle"></i> Warning <i class="fas fa-exclamation-triangle"></i>
+            </h2>
             <p class="text-gray-800 mb-4">This tool is for educational purposes only. The creator is not responsible for any misuse of this application.</p>
             <p class="text-gray-800 mb-4">By continuing, you accept full responsibility for your actions.</p>
             <button onclick="closeModal()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">I Understand</button>
@@ -20,14 +21,15 @@
     </div>
     
     <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
-
         <div class="flex justify-center">
             <img src="banner.gif" alt="Hedgehog Banner" class="w-full max-w-3xl rounded-lg shadow-lg">
         </div>
 
         <hr class="my-6 border-gray-300">
 
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Hedgehog POST Flood 🦔</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+            🦔 Hedgehog POST Flood 🦔
+        </h2>
 
         <label for="url" class="block font-semibold text-gray-700">URL:</label>
         <input type="text" id="url" placeholder="Enter the URL"
@@ -37,7 +39,7 @@
         <div id="fields" class="space-y-2 my-2"></div>
         <button type="button" onclick="addField()"
                 class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
-            ➕ Add Field
+            <i class="fas fa-plus"></i> Add Field
         </button>
 
         <div class="mt-4">
@@ -49,11 +51,11 @@
         <div class="flex justify-between mt-6">
             <button type="button" onclick="startLoop()"
                     class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-                ▶ Start
+                <i class="fas fa-play"></i> Start
             </button>
             <button type="button" onclick="stopLoop()"
                     class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
-                ⏹ Stop
+                <i class="fas fa-stop"></i> Stop
             </button>
         </div>
     </div>
@@ -67,9 +69,9 @@
     <hr class="my-6 border-gray-300">
 
     <footer class="mt-10 text-center text-gray-700">
-        <p class="text-lg">Developed by <strong>Maximiliano Sandoval</strong> 🦔</p>
-        <p><a href="https://maxisandoval.dev.ar/" class="text-blue-500 hover:underline">My Website</a> | 
-           <a href="https://github.com/maxisandoval" class="text-blue-500 hover:underline">My GitHub</a></p>
+        <p class="text-lg">Developed by <strong>Maximiliano Sandoval</strong> <i class="fas fa-paw"></i></p>
+        <p><a href="https://maxisandoval.dev.ar/" class="text-blue-500 hover:underline"><i class="fas fa-globe"></i> My Website</a> | 
+           <a href="https://github.com/maxisandoval" class="text-blue-500 hover:underline"><i class="fab fa-github"></i> My GitHub</a></p>
     </footer>
 
     <script>
@@ -98,7 +100,7 @@
             inputValue.classList.add("w-1/2", "p-2", "border", "border-gray-300", "rounded-md");
 
             const removeBtn = document.createElement("button");
-            removeBtn.textContent = "❌";
+            removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
             removeBtn.type = "button";
             removeBtn.classList.add("bg-red-500", "text-white", "px-3", "rounded-md", "hover:bg-red-600", "transition");
             removeBtn.onclick = () => div.remove();
@@ -112,7 +114,7 @@
         async function sendRequest() {
             const url = document.getElementById("url").value.trim();
             if (!url) {
-                logMessage("⚠️ Please enter a valid URL.");
+                logMessage('<i class="fas fa-exclamation-circle"></i> Please enter a valid URL.');
                 stopLoop();
                 return;
             }
@@ -132,9 +134,9 @@
                 });
 
                 const result = await response.text();
-                logMessage(`✅ Response (${new Date().toLocaleTimeString()}): ${result}`);
+                logMessage(`<i class="fas fa-check-circle"></i> Response (${new Date().toLocaleTimeString()}): ${result}`);
             } catch (error) {
-                logMessage(`❌ Error (${new Date().toLocaleTimeString()}): ${error.message}`);
+                logMessage(`<i class="fas fa-times-circle"></i> Error (${new Date().toLocaleTimeString()}): ${error.message}`);
             }
         }
 
@@ -148,16 +150,15 @@
             stopLoop();
             const interval = parseInt(document.getElementById("interval").value, 10) || 1000;
             intervalId = setInterval(sendRequest, interval);
-            logMessage("🔄 Looping request started...");
+            logMessage('<i class="fas fa-sync-alt"></i> Looping request started...');
         }
 
         function stopLoop() {
             if (intervalId) {
                 clearInterval(intervalId);
                 intervalId = null;
-                logMessage("🛑 Request stopped.");
+                logMessage('<i class="fas fa-stop-circle"></i> Request stopped.');
             }
         }
     </script>
 </body>
-</html>
