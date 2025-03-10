@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedgehog POST Flood</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    
+    <!-- Modal -->
+    <div id="warningModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
+            <h2 class="text-xl font-bold text-red-600 mb-4">⚠️ Warning ⚠️</h2>
+            <p class="text-gray-800 mb-4">This tool is for educational purposes only. The creator is not responsible for any misuse of this application.</p>
+            <p class="text-gray-800 mb-4">By continuing, you accept full responsibility for your actions.</p>
+            <button onclick="closeModal()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">I Understand</button>
+        </div>
+    </div>
+    
+    <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Hedgehog POST Flood 🦔</h2>
+
+        <label for="url" class="block font-semibold text-gray-700">URL:</label>
+        <input type="text" id="url" placeholder="Enter the URL"
+               class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+        <h3 class="text-lg font-semibold text-gray-800">Form Fields</h3>
+        <div id="fields" class="space-y-2 my-2"></div>
+        <button type="button" onclick="addField()"
+                class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
+            ➕ Add Field
+        </button>
+
+        <div class="mt-4">
+            <label for="interval" class="block font-semibold text-gray-700">Interval (ms):</label>
+            <input type="number" id="interval" value="1000" min="100" step="100"
+                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        </div>
+
+        <div class="flex justify-between mt-6">
+            <button type="button" onclick="startLoop()"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+                ▶ Start
+            </button>
+            <button type="button" onclick="stopLoop()"
+                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
+                ⏹ Stop
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-2xl mx-auto mt-6">
+        <h3 class="text-lg font-semibold text-gray-800">Logs</h3>
+        <textarea id="log" readonly
+                  class="w-full h-52 p-3 bg-gray-900 text-green-400 border border-gray-700 rounded-md overflow-auto font-mono"></textarea>
+    </div>
+
+    <script>
+        let intervalId = null;
+
+        function closeModal() {
+            document.getElementById("warningModal").style.display = "none";
+        }
+
+        function addField() {
+            const fieldsDiv = document.getElementById("fields");
+            const div = document.createElement("div");
+            div.classList.add("flex", "space-x-2");
+
+            const inputName = document.createElement("input");
+            inputName.type = "text";
+            inputName.placeholder = "Field name";
+            inputName.required = true;
+            inputName.classList.add("w-1/2", "p-2", "border", "border-gray-300", "rounded-md");
+
+            const inputValue = document.createElement("input");
+            inputValue.type = "text";
+            inputValue.placeholder = "Value";
+            inputValue.required = true;
+            inputValue.classList.add("w-1/2", "p-2", "border", "border-gray-300", "rounded-md");
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "❌";
+            removeBtn.type = "button";
+            removeBtn.classList.add("bg-red-500", "text-white", "px-3", "rounded-md", "hover:bg-red-600", "transition");
+            removeBtn.onclick = () => div.remove();
+
+            div.appendChild(inputName);
+            div.appendChild(inputValue);
+            div.appendChild(removeBtn);
+            fieldsDiv.appendChild(div);
+        }
+
+        async function sendRequest() {
+            const url = document.getElementById("url").value.trim();
+            if (!url) {
+                logMessage("⚠️ Please enter a valid URL.");
+                stopLoop();
+                return;
+            }
+
+            const formData = new FormData();
+            document.querySelectorAll("#fields div").forEach(div => {
+                const inputs = div.getElementsByTagName("input");
+                if (inputs[0].value && inputs[1].value) {
+                    formData.append(inputs[0].value, inputs[1].value);
+                }
+            });
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.text();
+                logMessage(`✅ Response (${new Date().toLocaleTimeString()}): ${result}`);
+            } catch (error) {
+                logMessage(`❌ Error (${new Date().toLocaleTimeString()}): ${error.message}`);
+            }
+        }
+
+        function logMessage(message) {
+            const logArea = document.getElementById("log");
+            logArea.value += message + "\n";
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function startLoop() {
+            stopLoop();
+            const interval = parseInt(document.getElementById("interval").value, 10) || 1000;
+            intervalId = setInterval(sendRequest, interval);
+            logMessage("🔄 Looping request started...");
+        }
+
+        function stopLoop() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+                logMessage("🛑 Request stopped.");
+            }
+        }
+    </script>
+</body>
+</html>
