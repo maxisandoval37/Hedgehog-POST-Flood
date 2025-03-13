@@ -1,6 +1,8 @@
 let intervalId = null;
 const glitchToggle = document.getElementById("glitchToggle");
 
+const audio = new Audio("resources/loop.mp3");
+
 function redirectToHTTPS() {
     let urlHTTP = "http://";
     let urlCurrent = location.href;
@@ -81,6 +83,16 @@ function logMessage(message) {
     logArea.scrollTop = logArea.scrollHeight;
 }
 
+function playLoopMusic() {
+    audio.addEventListener("timeupdate", () => {
+        if (audio.currentTime >= 16) {
+            audio.currentTime = 14.5135;
+        }
+    });
+
+    audio.play();
+}
+
 function startLoop() {
     stopLoop();
 
@@ -92,6 +104,8 @@ function startLoop() {
     
     if (glitchToggle.checked) {
         document.body.classList.add("glitch-effect");
+        
+        playLoopMusic();
     }
 }
 
@@ -103,5 +117,6 @@ function stopLoop() {
 
         document.body.classList.remove("glitch-effect");
         glitchToggle.disabled = false;
+        audio.pause();
     }
 }
