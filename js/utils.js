@@ -84,9 +84,11 @@ function logMessage(message) {
 }
 
 function playLoopMusic() {
+    audio.currentTime = 0;
+
     audio.addEventListener("timeupdate", () => {
         if (audio.currentTime >= 16) {
-            audio.currentTime = 14.5135;
+            audio.currentTime = 14.549;
         }
     });
 
